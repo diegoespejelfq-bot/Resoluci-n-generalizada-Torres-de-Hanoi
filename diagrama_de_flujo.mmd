@@ -1,0 +1,68 @@
+graph TD
+    Inicio([Inicio]) --> CheckN{Hf?}
+    
+    %% Nivel Superior: Reducciones
+    CheckN -- No --> Fin([Fin])
+    CheckN -- Si --> Red2Pos{¿Red2 posible?<br/>REF}
+    
+    Red2Pos -- Si --> ApplyRed2[Aplicar Red2:<br/>Eliminar S_sup de Cf]
+    ApplyRed2 --> CheckN
+    
+    Red2Pos -- No --> Red1Pos{¿Red1 posible?<br/>Semipila 1_r}
+    
+    Red1Pos -- Si --> ApplyRed1[Aplicar Red1:<br/>Tratar 1_r como unidad]
+    ApplyRed1 --> DisknFree{¿n libre<br/>y Cf libre?}
+    
+    Red1Pos -- No --> DisknFree
+    
+    %% Nivel Medio: Decisiones de Movimiento
+    DisknFree -- Si --> MoveN[Mover n a Cf]
+    MoveN --> ApplyRed2
+    
+    DisknFree -- No --> NGT3{¿n > 3?}
+    
+    NGT3 -- No --> BaseCase{¿1_r en Cf?}
+    
+    %% Ramas de Caso Base / n <= 3
+    BaseCase -- Si --> Move1rCa[1_r -> Ca]
+    Move1rCa --> Red1_2[Red1]
+    Red1_2 --> Move2Cf[2 -> Cf]
+    Move2Cf --> ApplyRed2
+
+    BaseCase -- No --> Move2Ca[2 -> Ca]
+    Move2Ca --> Move1rCa2[1_r -> Ca]
+    Move1rCa2 --> Red1_3[Red1]
+    Red1_3 --> Move1rCf[1_r -> Cf]
+    Move1rCf --> ApplyRed2
+
+    %% Ramas de Complejidad n > 3 (Liberación de Discos)
+    NGT3 -- Si --> Red1Pos2{¿Red1 posible?}
+    
+    Red1Pos2 -- No --> FreeN1{¿n-1 libre<br/>y n libre?}
+    Red1Pos2 -- Si --> Red1_4[Red1]
+    Red1_4 --> FreeN1
+    
+    FreeN1 -- Si --> MoveNminus1[n-1 -> Ca]
+    MoveNminus1 --> CheckN
+    
+    FreeN1 -- No --> FreeN2{¿n-2 libre<br/>y n-1 libre?}
+    
+    FreeN2 -- Si --> MoveNminus2[n-2 -> Ca-1]
+    MoveNminus2 --> CheckN
+    
+    FreeN2 -- No --> FreeN3{¿n-3 libre<br/>y n-2 libre?}
+    
+    FreeN3 -- Si --> MoveNminus3[n-3 -> Ca-2]
+    MoveNminus3 --> CheckN
+    
+    FreeN3 -- No --> Free32{¿3 libre<br/>y 2 libre?}
+    
+    Free32 -- Si --> Move3Ca[3 -> Ca]
+    Move3Ca --> CheckN
+    
+    Free32 -- No --> Move1rCa3[1_r -> Ca]
+    Move1rCa3 --> Red1_5[Red1]
+    Red1_5 --> CheckN
+
+    style ApplyRed2 fill:#f9f,stroke:#333,stroke-width:2px
+    style ApplyRed1 fill:#bbf,stroke:#333,stroke-width:2px
