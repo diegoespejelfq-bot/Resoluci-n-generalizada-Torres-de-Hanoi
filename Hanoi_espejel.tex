@@ -1,0 +1,101 @@
+\documentclass[11pt,a4paper]{article}
+
+% Paquetes recomendados
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\geometry{margin=2.5cm}
+
+% Definición de colores para código
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Entornos de Teoremas
+\newtheorem{theorem}{Teorema}
+
+\title{Torre de Hanoi: Estrategia óptima, algoritmo de resolución y análisis matemático}
+\author{M. en C. Diego Espejel}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este artículo presenta un estudio sistemático sobre la resolución óptima del juego de la Torre de Hanoi en cualquiera de sus configuraciones. Se formalizan los conceptos fundamentales y se adopta una notación homogénea basada en principios de programación. Se plantean dos teoremas centrales ---Irrelevancia de Elementos Superiores (IES) y Reducción de Elementos Finalizados (REF)--- que fundamentan la estrategia óptima. Finalmente, se extiende el método a configuraciones arbitrarias (no primitivas) mediante las transformaciones $Red1()$ y $Red2()$.
+\end{abstract}
+
+\section{Introducción}
+El problema de las Torres de Hanoi, introducido por Édouard Lucas en 1883, es un ejemplo paradigmático de recursividad \cite{cite:242}. Tradicionalmente se estudia la versión primitiva ($H_0$), pero este trabajo aborda la versión generalizada donde los discos pueden estar distribuidos arbitrariamente entre las columnas \cite{cite:237, 292}.
+
+\section{Definiciones y Notación}
+Para un sistema de $n$ discos $H_n = \{1, 2, \dots, n\}$, se definen tres columnas: $col\_i$ (inicial), $col\_a$ (auxiliar) y $col\_f$ (final) \cite{cite:250, 298}.
+
+\subsection{Notación de Movimientos}
+Cada acción se expresa como una llamada a función $move(a, b)$, donde $a$ es el disco o semipila a mover y $b$ es el destino \cite{cite:301}.
+\begin{itemize}
+    \item $move(1, col\_f)$: mueve el disco 1 a la columna final \cite{cite:303}.
+    \item $move(stack[r], col\_f)$: mueve una semipila de $r$ discos, equivalente a $2^r - 1$ movimientos \cite{cite:305, 426}.
+\end{itemize}
+
+\section{Fundamentos Teóricos}
+
+\begin{theorem}[Irrelevancia de Elementos Superiores - IES]
+Toda secuencia de movimientos que opere exclusivamente sobre un subconjunto de discos inferiores $S_{inf} = \{1, \dots, m\}$ es independiente de la disposición de los discos en $S_{sup} = \{m+1, \dots, n\}$, siempre que estos últimos no se muevan \cite{cite:255, 313}.
+\end{theorem}
+
+\begin{theorem}[Reducción de Elementos Finalizados - REF]
+Si los discos de $S_{sup} = \{m+1, \dots, n\}$ se encuentran ya posicionados en $col\_f$ respetando el orden, la resolución óptima es equivalente a resolver la instancia restringida a $S_{inf}$ \cite{cite:259, 316}.
+\end{theorem}
+
+\section{Resolución de Torres Primitivas ($H_0$)}
+La solución óptima para $n$ discos sigue una recurrencia fundamental:
+\begin{equation}
+    minMov(H_0[n]) = 2 \cdot minMov(H_0[n-1]) + 1 = 2^n - 1
+\end{equation}
+Esta secuencia se construye mediante tres fases: mover $n-1$ discos a $col\_a$, mover el disco $n$ a $col\_f$, y finalmente trasladar los $n-1$ discos de $col\_a$ a $col\_f$ \cite{cite:349, 351, 364}.
+
+\section{Resolución de Torres No Primitivas}
+Para configuraciones arbitrarias, se aplican iterativamente los siguientes operadores \cite{cite:267, 428}:
+
+\begin{enumerate}
+    \item \textbf{Red2()}: Descarta los discos que ya ocupan su posición final en $col\_f$ \cite{cite:414}.
+    \item \textbf{Red1()}: Agrupa semipilas válidas $\{1, \dots, r\}$ como una unidad $stack[r]$ \cite{cite:262, 422}.
+    \item \textbf{Liberación}: Se busca liberar el disco mayor restante $n$ para moverlo a $col\_f$ \cite{cite:321, 431}.
+\end{enumerate}
+
+\section{Algoritmo y Diagrama de Flujo}
+El proceso de decisión completo se rige por el estado de las columnas y la disponibilidad de los discos para ser movidos. El algoritmo converge cuando todos los discos alcanzan la configuración $H_f$ \cite{cite:460, 463}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Variable/Función & Descripción \\ \midrule
+$libre(k)$ & El disco $k$ no tiene nada encima. \\
+$stack[r]$ & Discos $\{1, \dots, r\}$ tratados como unidad. \\
+$M(n)$ & Secuencia óptima para $H_0[n]$. \\ \bottomrule
+\end{tabular}
+\caption{Funciones y símbolos definidos \cite{cite:298}.}
+\end{table}
+
+\end{document}
